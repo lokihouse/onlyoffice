@@ -1,0 +1,28 @@
+FROM ubuntu:22.04
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+ENV TZ=America/Sao_Paulo
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN apt-get update && \
+    apt-get install -y \
+    apt-transport-https \
+    libcurl4 \
+    libxml2 \
+    fonts-dejavu \
+    fonts-liberation \
+    ttf-mscorefonts-installer \
+    fonts-crosextra-carlito \
+    fonts-takao-gothic \
+    fonts-opensymbol \
+    postgresql \
+    rabbitmq-server \
+    nginx-extras
+
+RUN adduser --quiet --system --group --home /onlyoffice onlyoffice && \
+    echo "onlyoffice ALL=(ALL) NOPASSWD:ALL" | tee -a /etc/sudoers
+
+WORKDIR /onlyoffice/DocumentServer
+COPY ./core /onlyoffice/DocumentServer/core
+
